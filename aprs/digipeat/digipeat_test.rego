@@ -79,13 +79,13 @@ test_wide11 if {
 }
 
 test_wide22 if {
-	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, ["WIDE1-2"]] with input as input_example1
+	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, ["WIDE2-1"]] with input as input_example1
 		with input.packet.via_path.unused as ["WIDE2-2"]
 		with data.cfg as config1
 }
 
 test_wide22_unused_path if {
-	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, ["WIDE1-2"]]
+	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, ["WIDE2-1"]]
 		with input.packet.via_path.unused as ["WIDE2-2"]
 		with data.cfg as config1
 		with data.cfg.allowed_prefix as ["WIDE", "MA"]
@@ -93,19 +93,19 @@ test_wide22_unused_path if {
 
 test_wide12 if {
 	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, []] with input as input_example1
-		with input.packet.via_path.unused as ["WIDE1-2"]
+		with input.packet.via_path.unused as ["WIDE2-1"]
 		with data.cfg as config1
 }
 
 test_wide71_error if {
 	not digipeat.allow with input as input_example1
-		with input.packet.via_path.unused as ["WIDE7-1"]
+		with input.packet.via_path.unused as ["WIDE1-7"]
 		with data.cfg as config1
 }
 
 test_wide01_error if {
 	not digipeat.allow with input as input_example1
-		with input.packet.via_path.unused as ["WIDE0-1"]
+		with input.packet.via_path.unused as ["WIDE1-0"]
 		with data.cfg as config1
 }
 
@@ -117,7 +117,7 @@ test_ma11_accepted if {
 }
 
 test_ma22_accepted if {
-	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, ["MA1-2"]] with input as input_example1
+	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, ["MA2-1"]] with input as input_example1
 		with input.packet.via_path.unused as ["MA2-2"]
 		with data.cfg as config1
 		with data.cfg.allowed_prefix as ["WIDE", "MA"]

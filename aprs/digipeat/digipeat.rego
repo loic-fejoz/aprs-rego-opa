@@ -19,19 +19,19 @@ next_wide_value := [p, n, m] if {
 	some p in data.cfg.allowed_prefix
 	startswith(input.packet.via_path.unused[0], p)
 	values := split(substring(input.packet.via_path.unused[0], count(p), -1), "-")
-	n := to_number(values[0]) - 1
-	m := to_number(values[1])
+	n := to_number(values[0])
+	m := to_number(values[1]) - 1
 }
 
 is_wide_valid if {
 	count(next_wide_value) > 0
-	next_wide_value[1] >= 0
-	next_wide_value[2] >= next_wide_value[1]
+	next_wide_value[2] >= 0
+	next_wide_value[1] >= next_wide_value[2]
 }
 
 new_unused contains p if {
 	is_wide_valid
-	next_wide_value[1] > 0
+	next_wide_value[2] > 0
 	p := concat("", [
 		next_wide_value[0],
 		json.marshal(next_wide_value[1]),
