@@ -15,7 +15,7 @@ config1 := {
 	# Usually 30s
 	"history_length": time.parse_duration_ns("30s"),
 	# Accepted prefix for XXXn-N n-N paradigm
-	"allowed_prefix": ["WIDE"]
+	"allowed_prefix": ["WIDE"],
 }
 
 # An input example for the policy.
@@ -73,13 +73,13 @@ test_not_digipeating_my_message if {
 }
 
 test_wide11 if {
-	digipeat.allow with input as input_example1
+	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, []] with input as input_example1
 		with input.packet.via_path.unused as ["WIDE1-1"]
 		with data.cfg as config1
 }
 
 test_wide22 if {
-	digipeat.allow with input as input_example1
+	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, ["WIDE1-2"]] with input as input_example1
 		with input.packet.via_path.unused as ["WIDE2-2"]
 		with data.cfg as config1
 }
@@ -92,7 +92,7 @@ test_wide22_unused_path if {
 }
 
 test_wide12 if {
-	digipeat.allow with input as input_example1
+	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, []] with input as input_example1
 		with input.packet.via_path.unused as ["WIDE1-2"]
 		with data.cfg as config1
 }
@@ -110,29 +110,21 @@ test_wide01_error if {
 }
 
 test_ma11_accepted if {
-	digipeat.allow with input as input_example1
+	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, []] with input as input_example1
 		with input.packet.via_path.unused as ["MA1-1"]
 		with data.cfg as config1
 		with data.cfg.allowed_prefix as ["WIDE", "MA"]
 }
 
-test_ma11_unused_path if {
-	digipeat.transmit.via_path.unused = []
-		with input.packet.via_path.unused as ["MA1-1"]
+test_ma22_accepted if {
+	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, ["MA1-2"]] with input as input_example1
+		with input.packet.via_path.unused as ["MA2-2"]
 		with data.cfg as config1
 		with data.cfg.allowed_prefix as ["WIDE", "MA"]
 }
 
 test_wide11_wide_accepted if {
-	digipeat.allow with input as input_example1
-		with input.packet.via_path.unused as ["WIDE1-1"]
-		with data.cfg as config1
-		with data.cfg.allowed_prefix as ["WIDE", "MA"]
-}
-
-test_wide11_wide_unused_path if {
-	digipeat.transmit.via_path.unused = []
-		with input as input_example1
+	[digipeat.allow, digipeat.transmit.via_path.unused] == [true, []] with input as input_example1
 		with input.packet.via_path.unused as ["WIDE1-1"]
 		with data.cfg as config1
 		with data.cfg.allowed_prefix as ["WIDE", "MA"]

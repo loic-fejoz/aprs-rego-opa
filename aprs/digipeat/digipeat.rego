@@ -12,30 +12,32 @@ packet_id(pckt) := value if {
 	value := [pckt.source, pckt.destination, pckt.payload]
 }
 
-default new_wide_values := ["WIDE", 0, 0]
+default next_wide_value := []
 
-is_wide_valid if {
+# Evaluate next XXXn-M paradigm value (if valid)
+next_wide_value := [p, n, m] if {
 	some p in data.cfg.allowed_prefix
 	startswith(input.packet.via_path.unused[0], p)
 	values := split(substring(input.packet.via_path.unused[0], count(p), -1), "-")
-	n := to_number(values[0])
+	n := to_number(values[0]) - 1
 	m := to_number(values[1])
-	n > 0
-	m >= n
-	new_wide_values := [p, n - 1, m]
+}
+
+is_wide_valid if {
+	count(next_wide_value) > 0
+	next_wide_value[1] >= 0
+	next_wide_value[2] >= next_wide_value[1]
 }
 
 new_unused contains p if {
 	is_wide_valid
-	print(new_wide_values)
-	new_wide_values[1] > 0
+	next_wide_value[1] > 0
 	p := concat("", [
-		new_wide_values[0],
-		json.marshal(new_wide_values[1]),
+		next_wide_value[0],
+		json.marshal(next_wide_value[1]),
 		"-",
-		json.marshal(new_wide_values[2]),
+		json.marshal(next_wide_value[2]),
 	])
-	print(p)
 }
 
 default allow := false
@@ -49,7 +51,6 @@ allow if {
 }
 
 allow if {
-	# support of the XXXn-N paradigm
 	is_wide_valid
 }
 
